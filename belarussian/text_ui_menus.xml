@@ -4390,7 +4390,7 @@ You can see the values of the various abilities in the game under the correspond
 <Row><Cell>ui_unavailable</Cell><Cell>Unavailable</Cell><Cell>Недаступна</Cell></Row>
 <Row><Cell>ui_UnsavedProgressLost</Cell><Cell>Your unsaved progress will be lost!</Cell><Cell>Незахаванае праходжанне будзе страчана!</Cell></Row>
 <Row><Cell>ui_VegetationDetail</Cell><Cell>Vegetation detail</Cell><Cell>Дэталізацыя расліннасці</Cell></Row>
-<Row><Cell>ui_VegetationDetailTT</Cell><Cell>Sets foliage quality and draw distance.</Cell><Cell>Усталёувае якасць лістоты і дыстанцыю прамалёукі.</Cell></Row>
+<Row><Cell>ui_VegetationDetailTT</Cell><Cell>Sets foliage quality and draw distance.</Cell><Cell>Усталёувае якасць лістоў і дыстанцыю прамалёукі.</Cell></Row>
 <Row><Cell>ui_VeryHigh</Cell><Cell>Very high</Cell><Cell>Вышэйшае</Cell></Row>
 <Row><Cell>ui_VideoVolume</Cell><Cell>Video</Cell><Cell>Відэа</Cell></Row>
 <Row><Cell>ui_vis_cons</Cell><Cell>Vis./Conspic.</Cell><Cell>Від./Замет.</Cell></Row>

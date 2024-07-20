@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Edit XML</title>
+    <script>
+        function saveChanges(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            fetch('/save', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    alert(data.message);
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
+    </script>
+  </head>
+  <body>
+    <h1>Edit XML Cells</h1>
+    <form id="edit-form" onsubmit="saveChanges(event)">
+      {% for row in rows %}
+      <div
+        style="
+          width: 100%;
+          display: flex;
+          justify-content: space-between;
+          padding-bottom: 20px;
+          align-items: center;
+        "
+      >
+        <label for="cell_{{ row.id }}">Row {{ row.id + 1 }}:</label>
+        <input type="checkbox" id="{{ row.id }}" name="{{ row.id }}" />
+        <div style="width: 80%">
+          <textarea
+            type="text"
+            id="cell_{{ row.id }}"
+            name="cell_{{ row.id }}"
+            value="{{ row.text }}"
+            style="width: 100%"
+            rows="5"
+          >
+            {{ row.text }}
+        </textarea
+          >
+        </div>
+        <button type="submit">Save Changes</button>
+      </div>
+      {% endfor %}
+      <button type="submit">Save Changes</button>
+    </form>
+  </body>
+</html>

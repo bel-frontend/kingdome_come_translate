@@ -2,7 +2,7 @@ import xml.etree.ElementTree as ET
 import tiktoken
 from openai import OpenAI
 import os
-
+from dotenv import load_dotenv
 #
 #def extract_text_from_xml(xml_file):
 #    # Parse the XML file
@@ -39,16 +39,22 @@ import os
 # Configure your OpenAI API key
 # openai.api_key =
 
-# read tocken from  env file
+# read tocken from  .env file
+load_dotenv()
 api_token = os.getenv("OPENAI_API_KEY")
+
 client = OpenAI(
-    api_token=api_token,
+    # api_token = api_token,
    # This is the default and can be omitted
 )
 
-xml_file_path = "text_ui_misc.xml"
+# xml_file_path = "text_ui_misc.xml"
+xml_file_path = "text_ui_tutorials.xml"
 xml_folder = "russian"
 xnl_path = os.path.join(xml_folder, xml_file_path)
+output_folder = "output"
+output_path = os.path.join(output_folder, xml_file_path)
+
 
 def translate_text(text, target_language="Belarusian"):
     completion = client.chat.completions.create(
@@ -74,7 +80,7 @@ def parse_and_translate_xml(xml_file):
                 translated_text = translate_text(english_text)
                 cells[2].text = translated_text
 
-    tree.write(xml_file_path, encoding='utf-8', xml_declaration=True)
+    tree.write(output_path, encoding='utf-8', xml_declaration=True)
 
 
 if __name__ == "__main__":
