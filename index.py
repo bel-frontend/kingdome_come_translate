@@ -56,15 +56,17 @@ output_folder = "output"
 output_path = os.path.join(output_folder, xml_file_path)
 
 
-def translate_text(text, target_language="Belarusian"):
+def translate_text(text,open_ai_key=api_token , target_language="Belarusian",):
+    client = OpenAI(
+    api_key=(open_ai_key or '').strip(),
+    )
     completion = client.chat.completions.create(
         messages=[
-            {"role": "system", "content": f"You are a helpful assistant that translates Russian text to {target_language}."},
+            {"role": "system", "content": f"You are a helpful assistant that translates English text to {target_language}."},
             {"role": "user", "content": text}           
         ],
         model="gpt-4o-mini",
     ) 
-    print(completion.choices[0].message.content,text)
     return completion.choices[0].message.content
 
 

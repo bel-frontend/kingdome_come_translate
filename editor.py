@@ -3,6 +3,7 @@ import xml.etree.ElementTree as ET
 import os
 import sys
 from zipfile import ZipFile, ZIP_DEFLATED
+from  index import translate_text
 
 app = Flask(__name__, template_folder='templates', static_folder='static')
 
@@ -12,6 +13,7 @@ root = None
 file_path = None
 pak_file_path = None
 extracted_dir = "extracted_files"
+open_ai_key = None
 
 def resource_path(relative_path):
     """ Get absolute path to resource, works for dev and for PyInstaller """
@@ -21,6 +23,25 @@ def resource_path(relative_path):
 @app.route('/')
 def index():
     return render_template('index.html')
+
+@app.route('/load-ai-key', methods=['POST'])
+def load_ai_key():
+    global open_ai_key
+    updates = request.get_json()
+    text = updates.get('text')
+    open_ai_key = text
+    print(open_ai_key)
+    return jsonify({"status": "success", "message": "OpenAI API key loaded successfully!"})
+
+# get suggestions from OpenAI
+@app.route('/get-suggestions', methods=['POST'])
+def get_suggestions():
+    updates = request.get_json()
+    text = updates.get('text')
+    if open_ai_key:
+        return jsonify({ "suggestion": translate_text(text, open_ai_key)})
+    else:
+        return jsonify({"status": "error", "message": "OpenAI API key not loaded"})
 
 @app.route('/load-pak', methods=['POST'])
 def load_pak_file():
