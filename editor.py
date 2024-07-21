@@ -22,36 +22,6 @@ def resource_path(relative_path):
 def index():
     return render_template('index.html')
 
-@app.route('/load', methods=['POST'])
-def load_file():
-    global tree, root, file_path
-    file = request.files['file']
-    if not file:
-        return redirect(url_for('index'))
-
-    # Save the file to the 'uploads' directory
-    file_path = resource_path(os.path.join('uploads', file.filename))
-    os.makedirs(os.path.dirname(file_path), exist_ok=True)
-    file.save(file_path)
-
-    print(f"File saved to: {file_path}")  # Debugging statement
-
-    tree = ET.parse(file_path)
-    root = tree.getroot()
-
-    # Extract and trim the second and third cell from each row
-    rows = []
-    for idx, row in enumerate(root.findall(".//Row")):
-        cells = row.findall("Cell")
-        if len(cells) > 2:
-            rows.append({
-                'id': idx,
-                'text': (cells[2].text or '').strip(),
-                'context': (cells[1].text or '').strip()
-            })
-
-    return render_template('upload_pak.html', rows=rows, file_path=file_path)
-
 @app.route('/load-pak', methods=['POST'])
 def load_pak_file():
     global pak_file_path, extracted_dir
@@ -64,8 +34,39 @@ def load_pak_file():
     os.makedirs(os.path.dirname(pak_file_path), exist_ok=True)
     file.save(pak_file_path)
 
-    print(f"File saved to: {pak_file_path}")
-    return redirect(url_for('edit_form'))
+    # Extract PAK file contents
+    extracted_dir = resource_path(os.path.join('uploads', 'extracted'))
+    os.makedirs(extracted_dir, exist_ok=True)
+    with ZipFile(pak_file_path, 'r') as pak:
+        pak.extractall(extracted_dir)
+
+    # List XML files
+    xml_files = [f for f in os.listdir(extracted_dir) if f.endswith('.xml')]
+    return render_template('select_xml.html', xml_files=xml_files)
+
+@app.route('/select-xml', methods=['POST'])
+def select_xml():
+    global tree, root, file_path, extracted_dir
+    file_name = request.form.get('file_name')
+    if not file_name:
+        return redirect(url_for('index'))
+
+    file_path = os.path.join(extracted_dir, file_name)
+
+    tree = ET.parse(file_path)
+    root = tree.getroot()
+
+    rows = []
+    for idx, row in enumerate(root.findall(".//Row")):
+        cells = row.findall("Cell")
+        if len(cells) > 2:
+            rows.append({
+                'id': idx,
+                'text': (cells[2].text or '').strip(),
+                'context': (cells[1].text or '').strip()
+            })
+
+    return render_template('edit.html', rows=rows, file_path=file_path)
 
 @app.route('/edit')
 def edit_form():
@@ -106,7 +107,6 @@ def save_file():
     # Save the updated XML back to the file
     tree.write(file_path, encoding="utf-8", xml_declaration=True)
     return jsonify({"status": "success", "message": "XML file saved successfully!"})
-
 
 @app.route('/download')
 def download_file():
