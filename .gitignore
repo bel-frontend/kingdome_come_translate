@@ -1,4 +1,6 @@
 .env
 GameData/
 GameData/*
+build/
+dist/
 *.pak

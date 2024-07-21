@@ -1,12 +1,19 @@
 from flask import Flask, request, render_template, jsonify, redirect, url_for, send_file
 import xml.etree.ElementTree as ET
 import os
+import sys
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='templates', static_folder='static')
+
 app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024 
 tree = None
 root = None
 file_path = None
+
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
+    return os.path.join(base_path, relative_path)
 
 @app.route('/')
 def index():
@@ -20,8 +27,8 @@ def load_file():
         return redirect(url_for('index'))
 
     # Save the file to the 'uploads' directory
-    file_path = os.path.join('uploads', file.filename)
-    os.makedirs('uploads', exist_ok=True)
+    file_path = resource_path(os.path.join('uploads', file.filename))
+    os.makedirs(os.path.dirname(file_path), exist_ok=True)
     file.save(file_path)
 
     print(f"File saved to: {file_path}")  # Debugging statement
@@ -44,13 +51,15 @@ def save_file():
 
     # Update the XML with new values
     for key, value in request.form.items():
+        if key == 'file_path':
+            continue
         idx = int(key.replace('cell_', ''))
         cell = root.findall(".//Row/Cell[3]")[idx]
         cell.text = value.strip()
 
     # Save the updated XML back to the file
     tree.write(file_path, encoding="utf-8", xml_declaration=True)
-    return jsonify({"status": "success", "message": "XML file saved successfully!","download_url": url_for('download_file')})
+    return jsonify({"status": "success", "message": "XML file saved successfully!", "download_url": url_for('download_file')})
 
 @app.route('/download')
 def download_file():
