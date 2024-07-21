@@ -5,28 +5,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Edit XML</title>
     <script>
-        function saveChanges(event) {
-            event.preventDefault();
-            const formData = new FormData(event.target);
-            fetch('/save', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    alert(data.message);
-                } else {
-                    alert('Error: ' + data.message);
-                }
-            })
-            .catch(error => console.error('Error:', error));
+      let downloadUrl = "";
+      function saveChanges(event) {
+        event.preventDefault();
+        const formData = new FormData(event.target);
+        fetch("/save", {
+          method: "POST",
+          body: formData,
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.status === "success") {
+              const downloadButton = document.getElementById("download-button");
+              downloadUrl = data.download_url;
+              console.log(downloadButton);
+              document.getElementById("download-button").style.display =
+                "block";
+            } else {
+              alert("Error: " + data.message);
+            }
+          })
+          .catch((error) => console.error("Error:", error));
+      }
+      function downloadFile() {
+        if (downloadUrl) {
+          console.log("Downloading file...", downloadUrl);
+          window.location.href = downloadUrl;
         }
-    </script>
+      }
     </script>
   </head>
   <body>
     <h1>Edit XML Cells</h1>
+    <button id="download-button" style="display: none" onclick="downloadFile()">
+      Download Updated XML
+    </button>
     <form id="edit-form" onsubmit="saveChanges(event)">
       {% for row in rows %}
       <div
@@ -41,7 +54,7 @@
         <label for="cell_{{ row.id }}">Row {{ row.id + 1 }}:</label>
         <input type="checkbox" id="{{ row.id }}" name="{{ row.id }}" />
         <div style="width: 80%">
-        <div style="margin-bottom: 20px;">{{row.context}}</div>
+          <div style="margin-bottom: 20px">{{row.context}}</div>
           <textarea
             type="text"
             id="cell_{{ row.id }}"
@@ -49,7 +62,9 @@
             value="{{ row.text }}"
             style="width: 100%"
             rows="5"
-          >{{ row.text }}</textarea>
+          >
+{{ row.text }}</textarea
+          >
         </div>
         <button type="submit">Save Changes</button>
       </div>

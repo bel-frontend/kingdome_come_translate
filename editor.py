@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, jsonify, redirect, url_for
+from flask import Flask, request, render_template, jsonify, redirect, url_for, send_file
 import xml.etree.ElementTree as ET
 import os
 
@@ -50,7 +50,14 @@ def save_file():
 
     # Save the updated XML back to the file
     tree.write(file_path, encoding="utf-8", xml_declaration=True)
-    return jsonify({"status": "success", "message": "XML file saved successfully!"})
+    return jsonify({"status": "success", "message": "XML file saved successfully!","download_url": url_for('download_file')})
+
+@app.route('/download')
+def download_file():
+    global file_path
+    if not file_path or not os.path.exists(file_path):
+        return jsonify({"status": "error", "message": "File not found"})
+    return send_file(file_path, as_attachment=True)
 
 if __name__ == '__main__':
     app.run(debug=True)
