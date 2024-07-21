@@ -5,7 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Edit XML</title>
     <script>
-      let downloadUrl = "";
+      let xmlDownloadUrl = "";
+      let pakDownloadUrl = "";
+
       function saveChanges(event) {
         event.preventDefault();
         const formData = new FormData(event.target);
@@ -16,10 +18,33 @@
           .then((response) => response.json())
           .then((data) => {
             if (data.status === "success") {
-              const downloadButton = document.getElementById("download-button");
-              downloadUrl = data.download_url;
-              console.log(downloadButton);
-              document.getElementById("download-button").style.display =
+              xmlDownloadUrl = data.download_url;
+              document.getElementById("download-xml-button").style.display =
+                "block";
+              document.getElementById("pack-button").style.display = "block";
+            } else {
+              alert("Error: " + data.message);
+            }
+          })
+          .catch((error) => console.error("Error:", error));
+      }
+
+      function downloadXmlFile() {
+        if (xmlDownloadUrl) {
+          console.log("Downloading XML file...", xmlDownloadUrl);
+          window.location.href = xmlDownloadUrl;
+        }
+      }
+
+      function packXmlToPak() {
+        fetch("/pack", {
+          method: "POST",
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.status === "success") {
+              pakDownloadUrl = data.download_url;
+              document.getElementById("download-pak-button").style.display =
                 "block";
             } else {
               alert("Error: " + data.message);
@@ -27,19 +52,17 @@
           })
           .catch((error) => console.error("Error:", error));
       }
-      function downloadFile() {
-        if (downloadUrl) {
-          console.log("Downloading file...", downloadUrl);
-          window.location.href = downloadUrl;
+
+      function downloadPakFile() {
+        if (pakDownloadUrl) {
+          console.log("Downloading PAK file...", pakDownloadUrl);
+          window.location.href = pakDownloadUrl;
         }
       }
     </script>
   </head>
   <body>
     <h1>Edit XML Cells</h1>
-    <button id="download-button" style="display: none" onclick="downloadFile()">
-      Download Updated XML
-    </button>
     <form id="edit-form" onsubmit="saveChanges(event)">
       {% for row in rows %}
       <div
@@ -59,17 +82,38 @@
             type="text"
             id="cell_{{ row.id }}"
             name="cell_{{ row.id }}"
-            value="{{ row.text }}"
             style="width: 100%"
             rows="5"
           >
 {{ row.text }}</textarea
           >
         </div>
-        <button type="submit">Save Changes</button>
       </div>
       {% endfor %}
       <button type="submit">Save Changes</button>
+      <button
+        type="button"
+        id="pack-button"
+        style="display: none"
+        onclick="packXmlToPak()"
+      >
+        Pack XML to PAK
+      </button>
+      <button
+        type="button"
+        id="download-pak-button"
+        style="display: none"
+        onclick="downloadPakFile()"
+      >
+        Download PAK File
+      </button>
     </form>
+    <button
+      id="download-xml-button"
+      style="display: none"
+      onclick="downloadXmlFile()"
+    >
+      Download Updated XML
+    </button>
   </body>
 </html>

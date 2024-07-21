@@ -3,13 +3,23 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>XML Editor</title>
+    <title>Upload Files</title>
   </head>
   <body>
-    <h1>Upload XML File</h1>
+    <h1>Upload Files</h1>
+
+    <!-- Form for uploading XML file -->
+    <h2>Upload XML File</h2>
     <form action="/load" method="post" enctype="multipart/form-data">
       <input type="file" name="file" accept=".xml" />
-      <button type="submit">Load</button>
+      <button type="submit">Load XML</button>
+    </form>
+
+    <!-- Form for uploading PAK file -->
+    <h2>Upload PAK File</h2>
+    <form action="/load-pak" method="post" enctype="multipart/form-data">
+      <input type="file" name="file" accept=".pak,.zip" />
+      <button type="submit">Load PAK</button>
     </form>
   </body>
 </html>

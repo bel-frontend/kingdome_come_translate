@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <Table>
-<Row><Cell>game_over_basicTraining</Cell><Cell>You've lost the trust of Sir Radzig.</Cell><Cell>Ты потерял доверие пана Радцыга.</Cell></Row>
+<Row><Cell>game_over_basicTraining</Cell><Cell>You've lost the trust of Sir Radzig.</Cell><Cell>Ты потерял доверие пана Радцига.</Cell></Row>
 <Row><Cell>game_over_conquest_fled</Cell><Cell>Without your help, Istvan won the Battle of Talmberg.</Cell><Cell>Без твоей помощи Иштван выиграл сражение за Тальмберг.</Cell></Row>
 <Row><Cell>game_over_conquest_follow_capon</Cell><Cell>Without getting help, your father died.</Cell><Cell>Не получив помощи, твой отец умирает.</Cell></Row>
 <Row><Cell>game_over_counteroffensive_reinforcements</Cell><Cell>You didn't get the reinforcements to Vranik from Talmberg.</Cell><Cell>Ты не привел подкрепление во Враник из Тальмберга.</Cell></Row>
