@@ -86,6 +86,7 @@ def edit_form():
 
     return render_template('edit.html', rows=rows, file_path=file_path)
 
+
 @app.route('/save', methods=['POST'])
 def save_file():
     global tree, root, file_path
@@ -94,11 +95,12 @@ def save_file():
 
     # Update the XML with new values
     updates = request.get_json()
+    cells = root.findall(".//Row")
+
     for key, value in updates.items():
         if key == 'file_path':
             continue
         idx = int(key.replace('cell_', ''))
-        cells = root.findall(".//Row")
         if len(cells) > idx:
             cell = cells[idx].findall("Cell")
             if len(cell) > 2:
@@ -107,6 +109,7 @@ def save_file():
     # Save the updated XML back to the file
     tree.write(file_path, encoding="utf-8", xml_declaration=True)
     return jsonify({"status": "success", "message": "XML file saved successfully!"})
+
 
 @app.route('/download')
 def download_file():

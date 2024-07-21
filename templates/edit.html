@@ -5,73 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Edit XML</title>
     <script>
-      let xmlDownloadUrl = "";
-      let pakDownloadUrl = "";
-      const chunkSize = 500; // Number of items per chunk
-
-      function saveChanges(event) {
+      function saveRowChanges(event, rowId) {
         event.preventDefault();
-        const formData = new FormData(event.target);
+        const rowElement = document.getElementById(`row_${rowId}`);
+        const textarea = rowElement.querySelector("textarea");
         const data = {};
-        formData.forEach((value, key) => {
-          data[key] = value;
-        });
+        data[textarea.name] = textarea.value.trim();
 
-        const keys = Object.keys(data);
-        let index = 0;
-
-        function sendChunk() {
-          if (index >= keys.length) {
-            console.log("All chunks sent");
-            // All chunks sent
-            document.getElementById("download-xml-button").style.display =
-              "block";
-            document.getElementById("download-pak-button").style.display =
-              "block";
-            return;
-          }
-
-          const chunk = {};
-          for (
-            let i = index;
-            i < Math.min(index + chunkSize, keys.length);
-            i++
-          ) {
-            chunk[keys[i]] = data[keys[i]];
-          }
-          index += chunkSize;
-
-          fetch("/save", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(chunk),
+        fetch("/save", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.status === "success") {
+              const checkbox = rowElement.querySelector(`#checkbox_${rowId}`);
+              if (checkbox) checkbox.checked = true;
+            } else {
+              alert("Error: " + data.message);
+            }
           })
-            .then((response) => response.json())
-            .then((data) => {
-              if (data.status === "success") {
-                sendChunk();
-              } else {
-                alert("Error: " + data.message);
-              }
-            })
-            .catch((error) => console.error("Error:", error));
-        }
-
-        sendChunk();
+          .catch((error) => console.error("Error:", error));
       }
-
-      function downloadXmlFile() {
-        if (xmlDownloadUrl) {
-          console.log("Downloading XML file...", xmlDownloadUrl);
-          window.location.href = xmlDownloadUrl;
-        }
-      }
-
-      // function packXmlToPak() {
-
-      // }
 
       function downloadPakFile() {
         fetch("/pack", {
@@ -80,9 +38,7 @@
           .then((response) => response.json())
           .then((data) => {
             if (data.status === "success") {
-              pakDownloadUrl = data.download_url;
-              document.getElementById("download-pak-button").style.display =
-                "block";
+              const pakDownloadUrl = data.download_url;
               if (pakDownloadUrl) {
                 console.log("Downloading PAK file...", pakDownloadUrl);
                 window.location.href = pakDownloadUrl;
@@ -96,33 +52,29 @@
     </script>
   </head>
   <body>
-    <h1>Edit XML Cells</h1>
-    <!-- <button
+    <div
+      style="
+        position: sticky;
+        top: 0px;
+        background-color: white;
+        padding-bottom: 20px;
+        border-bottom: 1px solid gray;
+        margin-bottom: 20px;
+      "
+    >
+      <h1>Edit XML Cells</h1>
+      <button
         type="button"
-        id="pack-button"
-        style="display: none"
-        onclick="packXmlToPak()"
+        id="download-pak-button"
+        onclick="downloadPakFile()"
       >
-        Pack XML to PAK
-      </button> -->
-    <button
-      type="button"
-      id="download-pak-button"
-      style="display: none"
-      onclick="downloadPakFile()"
-    >
-      Download Updated PAK File
-    </button>
-    <button
-      id="download-xml-button"
-      style="display: none"
-      onclick="downloadXmlFile()"
-    >
-      Download Updated XML
-    </button>
-    <form id="edit-form" onsubmit="saveChanges(event)">
+        Download Updated PAK File
+      </button>
+    </div>
+    <form id="edit-form">
       {% for row in rows %}
       <div
+        id="row_{{ row.id }}"
         style="
           width: 100%;
           display: flex;
@@ -132,9 +84,9 @@
         "
       >
         <label for="cell_{{ row.id }}">Row {{ row.id + 1 }}:</label>
-        <input type="checkbox" id="{{ row.id }}" name="{{ row.id }}" />
+        <input type="checkbox" id="checkbox_{{ row.id }}" name="{{ row.id }}" />
         <div style="width: 80%">
-          <div style="margin-bottom: 20px">{{row.context}}</div>
+          <div style="margin-bottom: 20px">{{ row.context }}</div>
           <textarea
             type="text"
             id="cell_{{ row.id }}"
@@ -145,10 +97,15 @@
 {{ row.text }}</textarea
           >
         </div>
-        <button type="submit">Save Changes</button>
+        <button
+          type="button"
+          data-id="{{ row.id }}"
+          onclick="saveRowChanges(event, {{ row.id }})"
+        >
+          Save Changes
+        </button>
       </div>
       {% endfor %}
-      <button type="submit">Save Changes</button>
     </form>
   </body>
 </html>
