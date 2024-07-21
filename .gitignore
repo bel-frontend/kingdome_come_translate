@@ -3,4 +3,5 @@ GameData/
 GameData/*
 build/
 dist/
+uploads/
 *.pak
