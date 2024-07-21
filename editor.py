@@ -3,6 +3,7 @@ import xml.etree.ElementTree as ET
 import os
 
 app = Flask(__name__)
+app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024 
 tree = None
 root = None
 file_path = None
@@ -23,13 +24,17 @@ def load_file():
     os.makedirs('uploads', exist_ok=True)
     file.save(file_path)
 
-    # Parse the XML file
+    print(f"File saved to: {file_path}")  # Debugging statement
+
     tree = ET.parse(file_path)
     root = tree.getroot()
 
-    # Extract the third cell from each row
-    rows = [{'id': idx, 'text': cell.text} for idx, cell in enumerate(root.findall(".//Row/Cell[3]"))]
-    return render_template('edit.html', rows=rows)
+    # Extract and trim the second and third cell from each row
+    rows = [
+        {'id': idx, 'text': (cell[2].text or '').strip(), 'context': (cell[1].text or '').strip()}
+        for idx, cell in enumerate(root.findall(".//Row"))
+    ]
+    return render_template('edit.html', rows=rows, file_path=file_path)
 
 @app.route('/save', methods=['POST'])
 def save_file():
@@ -41,7 +46,7 @@ def save_file():
     for key, value in request.form.items():
         idx = int(key.replace('cell_', ''))
         cell = root.findall(".//Row/Cell[3]")[idx]
-        cell.text = value
+        cell.text = value.strip()
 
     # Save the updated XML back to the file
     tree.write(file_path, encoding="utf-8", xml_declaration=True)

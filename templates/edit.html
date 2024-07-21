@@ -41,6 +41,7 @@
         <label for="cell_{{ row.id }}">Row {{ row.id + 1 }}:</label>
         <input type="checkbox" id="{{ row.id }}" name="{{ row.id }}" />
         <div style="width: 80%">
+        <div style="margin-bottom: 20px;">{{row.context}}</div>
           <textarea
             type="text"
             id="cell_{{ row.id }}"
@@ -48,10 +49,7 @@
             value="{{ row.text }}"
             style="width: 100%"
             rows="5"
-          >
-            {{ row.text }}
-        </textarea
-          >
+          >{{ row.text }}</textarea>
         </div>
         <button type="submit">Save Changes</button>
       </div>
