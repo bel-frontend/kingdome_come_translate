@@ -3,9 +3,31 @@ import xml.etree.ElementTree as ET
 import os
 import sys
 from zipfile import ZipFile, ZIP_DEFLATED
-from  index import translate_text
+from index import translate_text
+import shutil
 
 app = Flask(__name__, template_folder='templates', static_folder='static')
+
+def delete_folders_and_files():
+    paths_to_delete = [
+        './uploads',
+        # 'path/to/folder2',
+        # 'path/to/file1.txt',
+        # 'path/to/file2.log'
+    ]
+    print('Delete files')
+    for path in paths_to_delete:
+        try:
+            if os.path.isdir(path):
+                shutil.rmtree(path)
+                print(f"Directory {path} removed successfully")
+            elif os.path.isfile(path):
+                os.remove(path)
+                print(f"File {path} removed successfully")
+            else:
+                print(f"{path} does not exist")
+        except Exception as e:
+            print(f"Error removing {path}: {e}")
 
 app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024  # 100 MB
 tree = None
@@ -46,6 +68,8 @@ def get_suggestions():
 @app.route('/load-pak', methods=['POST'])
 def load_pak_file():
     global pak_file_path, extracted_dir
+    delete_folders_and_files()
+
     file = request.files['file']
     if not file:
         return redirect(url_for('index'))
@@ -107,7 +131,6 @@ def edit_form():
 
     return render_template('edit.html', rows=rows, file_path=file_path)
 
-
 @app.route('/save', methods=['POST'])
 def save_file():
     global tree, root, file_path
@@ -128,9 +151,8 @@ def save_file():
                 cell[2].text = value.strip()
 
     # Save the updated XML back to the file
-    tree.write(file_path, encoding="utf-8", xml_declaration=True)
+    tree.write(file_path, encoding="utf-8", xml_declaration=None)
     return jsonify({"status": "success", "message": "XML file saved successfully!"})
-
 
 @app.route('/download')
 def download_file():
@@ -145,30 +167,23 @@ def pack_files():
     if not file_path or not pak_file_path:
         return jsonify({"status": "error", "message": "Files not loaded"})
 
-    # Create a temporary directory to extract current PAK contents
-    temp_dir = resource_path('temp')
-    os.makedirs(temp_dir, exist_ok=True)
-    with ZipFile(pak_file_path, 'r') as pak:
-        pak.extractall(temp_dir)
-
-    # Replace or add the XML file
-    with ZipFile(pak_file_path, 'w', ZIP_DEFLATED) as pak:
+    # Create a new PAK file and add the extracted contents and the new XML file
+    new_pak_file_path = resource_path(os.path.join('uploads', os.path.basename(pak_file_path)))
+    temp_dir = resource_path(os.path.join('uploads', 'extracted'))
+    print(pak_file_path, new_pak_file_path, temp_dir)
+    with ZipFile(new_pak_file_path, 'w', ZIP_DEFLATED) as pak:
         for root, dirs, files in os.walk(temp_dir):
             for file in files:
                 file_full_path = os.path.join(root, file)
+                print(file_full_path)
                 arcname = os.path.relpath(file_full_path, temp_dir)
                 pak.write(file_full_path, arcname)
         pak.write(file_path, os.path.basename(file_path))
 
-    # Clean up temporary directory
-    for root, dirs, files in os.walk(temp_dir, topdown=False):
-        for file in files:
-            os.remove(os.path.join(root, file))
-        for dir in dirs:
-            os.rmdir(os.path.join(root, dir))
-    os.rmdir(temp_dir)
+    # Update global pak_file_path to the new PAK file path
+    pak_file_path = new_pak_file_path
 
-    return jsonify({"status": "success", "message": "Files packed successfully!", "download_url": url_for('download_pak')})
+    return jsonify({"status": "success", "message": "Files packed successfully!", "download_url": url_for('download_pak', filename=os.path.basename(pak_file_path))})
 
 @app.route('/download-pak')
 def download_pak():
