@@ -5,6 +5,63 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Edit XML</title>
     <script>
+      let listOfFiles = [];
+      function getListOfXmlCells() {
+        fetch("/files")
+          .then((response) => response.json())
+          .then((data) => {
+            console.log(data);
+            if (data) {
+              listOfFiles = data;
+              const selectElement = document.getElementById("xml-files");
+              selectElement.innerHTML = "";
+              selectElement.innerHTML += `<option value="">Select XML File</option>`;
+              data.forEach((file) => {
+                selectElement.innerHTML += `<option value="${file}">${file}</option>`;
+              });
+            } else {
+              alert("Error: " + data.message);
+            }
+          })
+          .catch((error) => console.error("Error:", error));
+      }
+
+      function downloadXmlFileByName(fileName) {
+        fetch(`/download/${fileName}`)
+          .then((response) => response.blob())
+          .then((blob) => {
+            const url = window.URL.createObjectURL(new Blob([blob]));
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+          })
+          .catch((error) => console.error("Error:", error));
+      }
+
+      function uploadXmlFile(event) {
+        event.preventDefault();
+        const fileInput = document.getElementById("xml-file");
+        const file = fileInput.files[0];
+        const formData = new FormData();
+        formData.append("file", file);
+        fetch("/upload", {
+          method: "POST",
+          body: formData,
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.status === "success") {
+              alert("File uploaded successfully!");
+            } else {
+              alert("Error: " + data.message);
+            }
+          })
+          .catch((error) => console.error("Error:", error));
+      }
+
       function saveOpenAikey(event) {
         event.preventDefault();
         const openaiKey = document.getElementById("openai-key").value.trim();
@@ -135,7 +192,51 @@
           Download Updated PAK File
         </button>
       </div>
-      <div>
+      <div style="display: flex; gap: 20px">
+        <div
+          style="
+            display: flex;
+            gap: 10px;
+            flex-direction: column;
+            border: 1px solid grey;
+            padding: 10px;
+          "
+        >
+          <label for="xml-file">Upload XML File:</label>
+          <input type="file" id="xml-file" />
+          <button type="button" onclick="uploadXmlFile(event)">
+            Upload XML File
+          </button>
+        </div>
+        <div
+          style="
+            display: flex;
+            gap: 10px;
+            flex-direction: column;
+            border: 1px solid grey;
+            padding: 10px;
+          "
+        >
+          <label for="xml-files">Download XML File:</label>
+          <button type="button" onclick="getListOfXmlCells()">
+            Get List of XML Cells
+          </button>
+          <select
+            id="xml-files"
+            onchange="downloadXmlFileByName(this.value)"
+          ></select>
+        </div>
+      </div>
+      <div
+        style="
+          display: flex;
+          gap: 10px;
+          flex-direction: column;
+          border: 1px solid grey;
+          padding: 10px;
+        "
+      >
+        <label for="openai-key">OpenAI API Key:</label>
         <input type="text" id="openai-key" placeholder="OpenAI API Key" />
         <button type="button" onclick="saveOpenAikey(event)">
           Save API Key

@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, jsonify, redirect, url_for, send_file
+from flask import Flask, request, render_template, jsonify, redirect, url_for, send_file, send_from_directory, abort
 import xml.etree.ElementTree as ET
 import os
 import sys
@@ -7,6 +7,17 @@ from index import translate_text
 import shutil
 
 app = Flask(__name__, template_folder='templates', static_folder='static')
+
+UPLOAD_FOLDER = 'uploads/extracted'
+ALLOWED_EXTENSIONS = {'xml'}
+app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024  # 100 MB
+tree = None
+root = None
+file_path = None
+pak_file_path = None
+extracted_dir = "extracted_files"
+open_ai_key = None
+
 
 def delete_folders_and_files():
     paths_to_delete = [
@@ -29,13 +40,7 @@ def delete_folders_and_files():
         except Exception as e:
             print(f"Error removing {path}: {e}")
 
-app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024  # 100 MB
-tree = None
-root = None
-file_path = None
-pak_file_path = None
-extracted_dir = "extracted_files"
-open_ai_key = None
+
 
 def resource_path(relative_path):
     """ Get absolute path to resource, works for dev and for PyInstaller """
@@ -192,5 +197,41 @@ def download_pak():
         return jsonify({"status": "error", "message": "PAK file not found"})
     return send_file(pak_file_path, as_attachment=True)
 
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+@app.route('/upload', methods=['POST'])
+def upload_file():
+    if 'file' not in request.files:
+        return 'No file part', 400
+    file = request.files['file']
+    if file.filename == '':
+        return 'No selected file', 400
+    if file and allowed_file(file.filename):
+        filename = file.filename
+        file.save(os.path.join(UPLOAD_FOLDER, filename))
+        return 'File uploaded successfully', 200
+    else:
+        return 'Invalid file type', 400
+
+@app.route('/download/<filename>', methods=['GET'])
+def download_xml(filename):
+    print(filename)
+    if allowed_file(filename):
+        if os.path.exists(os.path.join(UPLOAD_FOLDER, filename)):
+            return send_from_directory(UPLOAD_FOLDER, filename)
+        else:
+            abort(404)
+    else:
+        return 'Invalid file type', 400
+    
+@app.route('/files', methods=['GET'])
+def list_xml_files():
+    files = os.listdir(UPLOAD_FOLDER)
+    print(files)
+    xml_files = [file for file in files if file.endswith('.xml')]
+    return jsonify(xml_files)
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0',debug=True)
