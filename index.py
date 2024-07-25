@@ -65,7 +65,8 @@ def translate_text(text,open_ai_key=api_token , target_language="Belarusian",):
             {"role": "system", "content": f"You are a helpful assistant that translates English text to {target_language}."},
             {"role": "user", "content": text}           
         ],
-        model="gpt-4o-mini",
+        # model="gpt-4o-mini",
+        model="gpt-4o",
     ) 
     return completion.choices[0].message.content
 

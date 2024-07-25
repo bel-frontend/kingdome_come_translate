@@ -1,30 +1,21 @@
 # -*- mode: python ; coding: utf-8 -*-
 
-# Import necessary modules from PyInstaller
-from PyInstaller.utils.hooks import collect_data_files
 
-# Analysis: Define what is included in the package
 a = Analysis(
-    ['run_app.py'],  # Main script to be executed
-    pathex=[],  # Paths to search for imports
-    binaries=[],  # Additional binary files
-    datas=[
-        ('templates', 'templates'),  # Include the 'templates' directory
-        ('static', 'static'),  # Include the 'static' directory if needed
-    ],
-    hiddenimports=[],  # Hidden imports that PyInstaller might miss
-    hookspath=[],  # Custom hooks
+    ['run_app.py'],
+    pathex=[],
+    binaries=[],
+    datas=[('templates', 'templates')],
+    hiddenimports=[],
+    hookspath=[],
     hooksconfig={},
-    runtime_hooks=[],  # Scripts to be run before the main script
-    excludes=[],  # Modules to exclude
+    runtime_hooks=[],
+    excludes=[],
     noarchive=False,
     optimize=0,
 )
-
-# PYZ: Create a compressed archive of all the Python modules
 pyz = PYZ(a.pure)
 
-# EXE: Generate the executable
 exe = EXE(
     pyz,
     a.scripts,
@@ -44,16 +35,4 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-)
-
-# COLLECT: Collect all necessary files into a single directory
-coll = COLLECT(
-    exe,
-    a.binaries,
-    a.zipfiles,
-    a.datas,
-    strip=False,
-    upx=True,
-    upx_exclude=[],
-    name='run_app',
 )
