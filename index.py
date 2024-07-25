@@ -1,43 +1,8 @@
 import xml.etree.ElementTree as ET
-import tiktoken
 from openai import OpenAI
 import os
 from dotenv import load_dotenv
-#
-#def extract_text_from_xml(xml_file):
-#    # Parse the XML file
-#    tree = ET.parse(xml_file)
-#    root = tree.getroot()
-#
-#    # Extract all text from the XML
-#    text_content = []
-#    for elem in root.iter():
-#        if elem.text:
-#            text_content.append(elem.text.strip())
-#    return " ".join(text_content)
-#
-#def count_tokens(text, model="gpt-4o-mini"):
-#    # Initialize the tokenizer for the specified model
-#    enc = tiktoken.encoding_for_model(model)
-#
-#    # Encode the text into tokens
-#    tokens = enc.encode(text)
-#
-#    # Return the number of tokens
-#    return len(tokens)
-#
-#if __name__ == "__main__":
-#    xml_file_path = "text_ui_dialog.xml"
-#    text = extract_text_from_xml(xml_file_path)
-#    token_count = count_tokens(text)
-#
-#    print(f"Token count for the provided XML file: {token_count}")
-#
-#
-#
 
-# Configure your OpenAI API key
-# openai.api_key =
 
 # read tocken from  .env file
 load_dotenv()
