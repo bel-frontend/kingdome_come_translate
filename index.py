@@ -27,7 +27,7 @@ def translate_text(text,open_ai_key=api_token , target_language="Belarusian",):
     )
     completion = client.chat.completions.create(
         messages=[
-            {"role": "system", "content": f"You are a helpful assistant that translates English text to {target_language}."},
+            {"role": "system", "content": f"You are a helpful assistant that translates English text to {target_language}. We are translating game about middle ages."},
             {"role": "user", "content": text}           
         ],
         # model="gpt-4o-mini",
