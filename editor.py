@@ -11,13 +11,14 @@ app = Flask(__name__, template_folder='templates', static_folder='static')
 UPLOAD_FOLDER = 'uploads/extracted'
 ALLOWED_EXTENSIONS = {'xml'}
 app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024  # 100 MB
+
+# Initialize variables
 tree = None
 root = None
 file_path = None
 pak_file_path = None
 extracted_dir = "extracted_files"
 open_ai_key = None
-
 
 def delete_folders_and_files():
     paths_to_delete = [
@@ -40,12 +41,36 @@ def delete_folders_and_files():
         except Exception as e:
             print(f"Error removing {path}: {e}")
 
-
-
 def resource_path(relative_path):
     """ Get absolute path to resource, works for dev and for PyInstaller """
     base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
     return os.path.join(base_path, relative_path)
+
+def initialize_variables():
+    global tree, root, file_path, pak_file_path, extracted_dir
+    extracted_dir = resource_path(os.path.join('uploads', 'extracted'))
+    
+    # Check if extracted directory exists and contains files
+    if os.path.exists(extracted_dir):
+        # Check if XML file exists
+        xml_files = [f for f in os.listdir(extracted_dir) if f.endswith('.xml')]
+        if xml_files:
+            file_path = os.path.join(extracted_dir, xml_files[0])
+            tree = ET.parse(file_path)
+            root = tree.getroot()
+        else:
+            file_path = None
+
+        # Check if PAK file exists
+        uploads_dir = resource_path('uploads')
+        pak_files = [f for f in os.listdir(uploads_dir) if f.endswith('.pak')]
+        if pak_files:
+            pak_file_path = os.path.join(uploads_dir, pak_files[0])
+        else:
+            pak_file_path = None
+    else:
+        file_path = None
+        pak_file_path = None
 
 @app.route('/')
 def index():
@@ -234,4 +259,5 @@ def list_xml_files():
     return jsonify(xml_files)
 
 if __name__ == '__main__':
+    initialize_variables()
     app.run(host='0.0.0.0',debug=True)

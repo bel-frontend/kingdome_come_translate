@@ -27,7 +27,17 @@ def translate_text(text,open_ai_key=api_token , target_language="Belarusian",):
     )
     completion = client.chat.completions.create(
         messages=[
-            {"role": "system", "content": f"You are a helpful assistant that translates English text to {target_language}. We are translating game about middle ages."},
+            {"role": "system", "content": f"""You are a helpful assistant that translates English text to {target_language}.
+             We are translating game about middle ages. Next  words should  translated:
+             sir - пан,
+             Hair o' the Dog potion - зелле "Сабачча поўсць",
+             charisma - [арызма,
+             vitality - жывучасць,
+             skill Speech - красамоўстваб,
+             like one - як ён,
+             potion - зелле,
+
+              """},
             {"role": "user", "content": text}           
         ],
         # model="gpt-4o-mini",
