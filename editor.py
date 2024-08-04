@@ -5,6 +5,7 @@ import sys
 from zipfile import ZipFile, ZIP_DEFLATED
 from index import translate_text
 import shutil
+from dotenv import load_dotenv
 
 app = Flask(__name__, template_folder='templates', static_folder='static')
 
@@ -19,6 +20,10 @@ file_path = None
 pak_file_path = None
 extracted_dir = "extracted_files"
 open_ai_key = None
+api_token = os.getenv("OPENAI_API_KEY")
+
+
+load_dotenv()
 
 def delete_folders_and_files():
     paths_to_delete = [
@@ -90,8 +95,8 @@ def load_ai_key():
 def get_suggestions():
     updates = request.get_json()
     text = updates.get('text')
-    if open_ai_key:
-        return jsonify({ "suggestion": translate_text(text, open_ai_key)})
+    if open_ai_key or api_token:
+        return jsonify({ "suggestion": translate_text(text, open_ai_key or api_token) })
     else:
         return jsonify({"status": "error", "message": "OpenAI API key not loaded"})
 
@@ -259,5 +264,5 @@ def list_xml_files():
     return jsonify(xml_files)
 
 if __name__ == '__main__':
-    initialize_variables()
+    # initialize_variables()
     app.run(host='0.0.0.0',debug=True)

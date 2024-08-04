@@ -21,7 +21,8 @@ output_folder = "output"
 output_path = os.path.join(output_folder, xml_file_path)
 
 
-def translate_text(text,open_ai_key=api_token , target_language="Belarusian",):
+def translate_text(text,open_ai_key , target_language="Belarusian",):
+    print(open_ai_key)
     client = OpenAI(
     api_key=(open_ai_key or '').strip(),
     )
@@ -31,11 +32,19 @@ def translate_text(text,open_ai_key=api_token , target_language="Belarusian",):
              We are translating game about middle ages. Next  words should  translated:
              sir - пан,
              Hair o' the Dog potion - зелле "Сабачча поўсць",
-             charisma - [арызма,
+             charisma - Абаянне,
              vitality - жывучасць,
-             skill Speech - красамоўстваб,
-             like one - як ён,
+             skill Speech - красамоўства,
+             like one - як  адзін з іх,
              potion - зелле,
+             potions - зеллі,
+             a Cuman - полавец, полаўцы 
+             road - дарога, шлях,
+             you - ты,
+             Henry - Індрык,
+             Reeky - Смярдзюк,
+             The nobility (aristocracy) - шляхта,
+             Hanush - Януш,
 
               """},
             {"role": "user", "content": text}           
