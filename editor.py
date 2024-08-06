@@ -263,6 +263,71 @@ def list_xml_files():
     xml_files = [file for file in files if file.endswith('.xml')]
     return jsonify(xml_files)
 
+
+replacements = {
+    'уу': 'уў',
+    'ау': 'аў',
+    'еу': 'еў',
+    'эу': 'эў',
+    'оу': 'оў',
+    'ыу': 'ыў',
+    'яу': 'яў',
+    'іу': 'іў',
+    'юу': 'юў',
+    'ёу': 'ёў',
+    'Уу': 'Уў',
+    'Ау': 'Аў',
+    'Еу': 'Еў',
+    'Эу': 'Эў',
+    'Оу': 'Оў',
+    'Ыу': 'Ыў',
+    'Яу': 'Яў',
+    'Іу': 'Іў',
+    'Юу': 'Юў',
+    'Ёу': 'Ёў',
+
+    'у у': 'у ў',
+    'а у': 'а ў',
+    'е у': 'е ў',
+    'э у': 'э ў',
+    'о у': 'о ў',
+    'ы у': 'ы ў',
+    'я у': 'я ў',
+    'і у': 'і ў',
+    'ю у': 'ю ў',
+    'ё у': 'ё ў',
+    'У у': 'У ў',
+    'А у': 'А ў',
+    'Е у': 'Е ў',
+    'Э у': 'Э ў',
+    'О у': 'О ў',
+    'Ы у': 'Ы ў',
+    'Я у': 'Я ў',
+    'І у': 'І ў',
+    'Ю у': 'Ю ў',
+    'Ё у': 'Ё ў',
+
+
+
+    # Add more replacements as needed
+}
+
+@app.route('/replace', methods=['POST'])
+def replace_groups():
+    if not os.path.exists(file_path):
+        return jsonify({"error": "File does not exist"}), 404
+
+    with open(file_path, 'r', encoding='utf-8') as file:
+        content = file.read()
+
+    for old, new in replacements.items():
+        content = content.replace(old, new)
+
+    with open(file_path, 'w', encoding='utf-8') as file:
+        file.write(content)
+    
+    return jsonify({"message": "Replacements done successfully"}), 200
+
 if __name__ == '__main__':
     # initialize_variables()
     app.run(host='0.0.0.0',debug=True)

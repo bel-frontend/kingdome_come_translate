@@ -83,6 +83,17 @@
           .catch((error) => console.error("Error:", error));
       }
 
+      function replaceAllU() {
+        fetch("/replace", {
+          method: "POST",
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            alert("All Ў replaced successfully!");
+          })
+          .catch((error) => console.error("Error:", error));
+      }
+
       function getSuggestion(event, row) {
         const rowId = row.id;
         const context = row.context;
@@ -225,6 +236,17 @@
             id="xml-files"
             onchange="downloadXmlFileByName(this.value)"
           ></select>
+        </div>
+        <div
+          style="
+            display: flex;
+            gap: 10px;
+            flex-direction: column;
+            border: 1px solid grey;
+            padding: 10px;
+          "
+        >
+          <button type="button" onclick="replaceAllU()">Replace All Ў</button>
         </div>
       </div>
       <div

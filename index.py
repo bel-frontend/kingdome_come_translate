@@ -45,6 +45,8 @@ def translate_text(text,open_ai_key , target_language="Belarusian",):
              Reeky - Смярдзюк,
              The nobility (aristocracy) - шляхта,
              Hanush - Януш,
+             Johanka - Ёханка,
+            
 
               """},
             {"role": "user", "content": text}           
