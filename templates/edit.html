@@ -90,6 +90,8 @@
           .then((response) => response.json())
           .then((data) => {
             alert("All Ў replaced successfully!");
+            // reload page
+            location.reload();
           })
           .catch((error) => console.error("Error:", error));
       }
