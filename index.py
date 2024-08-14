@@ -41,11 +41,14 @@ def translate_text(text,open_ai_key , target_language="Belarusian",):
              a Cuman - полавец, полаўцы 
              road - дарога, шлях,
              you - ты,
-             Henry - Індрык,
+             Henry - Індржых,
              Reeky - Смярдзюк,
              The nobility (aristocracy) - шляхта,
              Hanush - Януш,
              Johanka - Ёханка,
+             Wenceslas - Вацлаў,
+             Bohemia - Багемія,
+             Sigismund - Жыгімонт,
             
 
               """},
@@ -53,6 +56,7 @@ def translate_text(text,open_ai_key , target_language="Belarusian",):
         ],
         # model="gpt-4o-mini",
         model="gpt-4o",
+        # model="gpt-4o-2024-08-06",
     ) 
     return completion.choices[0].message.content
 
