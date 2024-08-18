@@ -29,7 +29,8 @@ def translate_text(text,open_ai_key , target_language="Belarusian",):
     completion = client.chat.completions.create(
         messages=[
             {"role": "system", "content": f"""You are a helpful assistant that translates English text to {target_language}.
-             We are translating game about middle ages. Next  words should  translated:
+             We are translating game about middle ages. Words in [] do not translate. For example [Hairstyles] should be [Hairstyles]
+             Next  words should  translated:
              sir - пан,
              Hair o' the Dog potion - зелле "Сабачча поўсць",
              charisma - Абаянне,
@@ -41,7 +42,7 @@ def translate_text(text,open_ai_key , target_language="Belarusian",):
              a Cuman - полавец, полаўцы 
              road - дарога, шлях,
              you - ты,
-             Henry - Індржых,
+             Henry - Індрык,
              Reeky - Смярдзюк,
              The nobility (aristocracy) - шляхта,
              Hanush - Януш,
@@ -49,8 +50,16 @@ def translate_text(text,open_ai_key , target_language="Belarusian",):
              Wenceslas - Вацлаў,
              Bohemia - Багемія,
              Sigismund - Жыгімонт,
+             charcoal-burner - вугляпал,
+             <br/>&nbsp;<br/> - <br/>&nbsp;<br/>  
+             Kuttenberg - Кутна-Гора,
+             Uzhitz - Ужыца,
+             Samopše - Самапеш,
+             Sasau - Сазаў,
+             the Holy Lance - дзіда,
+             Merhojed - Мрхаеды,
+             safe-conduct documenе - ахоўная  грамата,
             
-
               """},
             {"role": "user", "content": text}           
         ],

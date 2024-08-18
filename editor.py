@@ -187,6 +187,8 @@ def save_file():
 
     # Save the updated XML back to the file
     tree.write(file_path, encoding="utf-8", xml_declaration=None)
+    save_pack_files()
+    # save saved indexes and file names  to csv file
     return jsonify({"status": "success", "message": "XML file saved successfully!"})
 
 @app.route('/download')
@@ -206,6 +208,29 @@ def pack_files():
     new_pak_file_path = resource_path(os.path.join('uploads', os.path.basename(pak_file_path)))
     temp_dir = resource_path(os.path.join('uploads', 'extracted'))
     print(pak_file_path, new_pak_file_path, temp_dir)
+    with ZipFile(new_pak_file_path, 'w', ZIP_DEFLATED) as pak:
+        for root, dirs, files in os.walk(temp_dir):
+            for file in files:
+                file_full_path = os.path.join(root, file)
+                print(file_full_path)
+                arcname = os.path.relpath(file_full_path, temp_dir)
+                pak.write(file_full_path, arcname)
+        pak.write(file_path, os.path.basename(file_path))
+
+    # Update global pak_file_path to the new PAK file path
+    pak_file_path = new_pak_file_path
+
+    return jsonify({"status": "success", "message": "Files packed successfully!", "download_url": url_for('download_pak', filename=os.path.basename(pak_file_path))})
+
+def save_pack_files():
+    global file_path, pak_file_path
+    if not file_path or not pak_file_path:
+        return jsonify({"status": "error", "message": "Files not loaded"})
+
+    # Create a new PAK file and add the extracted contents and the new XML file
+    new_pak_file_path = resource_path(os.path.join('backup', os.path.basename(pak_file_path)))
+    temp_dir = resource_path(os.path.join('uploads', 'extracted'))
+    print(pak_file_path,'old', new_pak_file_path, temp_dir)
     with ZipFile(new_pak_file_path, 'w', ZIP_DEFLATED) as pak:
         for root, dirs, files in os.walk(temp_dir):
             for file in files:
