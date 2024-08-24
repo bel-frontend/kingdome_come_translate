@@ -59,6 +59,8 @@ def translate_text(text,open_ai_key , target_language="Belarusian",):
              the Holy Lance - дзіда,
              Merhojed - Мрхаеды,
              safe-conduct documenе - ахоўная  грамата,
+             the Bailiff - ваявода,
+             Racek Kobyla - Рацык Кабыла,
             
               """},
             {"role": "user", "content": text}           
