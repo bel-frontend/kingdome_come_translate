@@ -45,6 +45,7 @@ def translate_text(text,open_ai_key , target_language="Belarusian",):
              Henry - Індрык,
              Reeky - Смярдзюк,
              The nobility (aristocracy) - шляхта,
+             nobleman - шляхціч,
              Hanush - Януш,
              Johanka - Ёханка,
              Wenceslas - Вацлаў,
@@ -61,6 +62,12 @@ def translate_text(text,open_ai_key , target_language="Belarusian",):
              safe-conduct documenе - ахоўная  грамата,
              the Bailiff - ваявода,
              Racek Kobyla - Рацык Кабыла,
+             Sir Hans Capon - Пан Ян  Птачак,
+             Leipa - Ліпа,
+             Conspicuousness - Прыкметнасць,
+             Visibility - Бачнасць,
+             Fast talk - Красамоўства,
+
             
               """},
             {"role": "user", "content": text}           
