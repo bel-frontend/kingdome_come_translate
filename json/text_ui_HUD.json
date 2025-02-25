@@ -1,0 +1,46 @@
+[
+    {
+        "key": "ui_hud_drop_body",
+        "language": "en",
+        "namespace": "default",
+        "value": "Drop body",
+        "applicationId": "appIDec34bf94bf92bf5d",
+        "id": "valueIDui_hud_drop_body",
+        "updated_at": "2025-01-05T13:42:00.438272Z",
+        "appkicationId": "appIDec34bf94bf92bf5d",
+        "langCode": "en"
+    },
+    {
+        "key": "ui_hud_drop_body",
+        "language": "be",
+        "namespace": "default",
+        "value": "Кінуць цела",
+        "applicationId": "appIDec34bf94bf92bf5d",
+        "id": "valueIDui_hud_drop_body",
+        "updated_at": "2025-01-05T13:42:00.438272Z",
+        "appkicationId": "appIDec34bf94bf92bf5d",
+        "langCode": "be"
+    },
+    {
+        "key": "ui_hud_pick_up_body",
+        "language": "en",
+        "namespace": "default",
+        "value": "Pick up body",
+        "applicationId": "appIDec34bf94bf92bf5d",
+        "id": "valueIDui_hud_pick_up_body",
+        "updated_at": "2025-01-05T13:42:00.438272Z",
+        "appkicationId": "appIDec34bf94bf92bf5d",
+        "langCode": "en"
+    },
+    {
+        "key": "ui_hud_pick_up_body",
+        "language": "be",
+        "namespace": "default",
+        "value": "Падняць цела",
+        "applicationId": "appIDec34bf94bf92bf5d",
+        "id": "valueIDui_hud_pick_up_body",
+        "updated_at": "2025-01-05T13:42:00.438272Z",
+        "appkicationId": "appIDec34bf94bf92bf5d",
+        "langCode": "be"
+    }
+]

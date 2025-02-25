@@ -1,0 +1,46 @@
+[
+    {
+        "key": "ui_hud_drop_body",
+        "language": "en",
+        "namespace": "default",
+        "value": "Drop body",
+        "applicationId": "appIDec34bf94bf92bf5d",
+        "id": "valueIDui_hud_drop_body",
+        "updated_at": "2025-02-26T00:09:52.293346Z",
+        "appkicationId": "appIDec34bf94bf92bf5d",
+        "langCode": "en"
+    },
+    {
+        "key": "ui_hud_drop_body",
+        "language": "ru",
+        "namespace": "default",
+        "value": "Бросить тело",
+        "applicationId": "appIDec34bf94bf92bf5d",
+        "id": "valueIDui_hud_drop_body",
+        "updated_at": "2025-02-26T00:09:52.293346Z",
+        "appkicationId": "appIDec34bf94bf92bf5d",
+        "langCode": "ru"
+    },
+    {
+        "key": "ui_hud_pick_up_body",
+        "language": "en",
+        "namespace": "default",
+        "value": "Pick up body",
+        "applicationId": "appIDec34bf94bf92bf5d",
+        "id": "valueIDui_hud_pick_up_body",
+        "updated_at": "2025-02-26T00:09:52.293346Z",
+        "appkicationId": "appIDec34bf94bf92bf5d",
+        "langCode": "en"
+    },
+    {
+        "key": "ui_hud_pick_up_body",
+        "language": "ru",
+        "namespace": "default",
+        "value": "Поднять тело",
+        "applicationId": "appIDec34bf94bf92bf5d",
+        "id": "valueIDui_hud_pick_up_body",
+        "updated_at": "2025-02-26T00:09:52.293346Z",
+        "appkicationId": "appIDec34bf94bf92bf5d",
+        "langCode": "ru"
+    }
+]
